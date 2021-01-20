@@ -29,8 +29,8 @@ var chartGroup = svg.append("g")
 function xScale(myData) {
   // create scales
   var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(myData, d => d.poverty) * 0.8,
-      d3.max(myData, d => d.poverty) * 1.2
+    .domain([d3.min(myData, d => d.poverty)*.9,
+      d3.max(myData, d => d.poverty)
     ])
     .range([0, width]);
 
@@ -55,7 +55,7 @@ d3.csv("assets/data/data.csv").then(function(myData, err) {
 
   // Create y scale function
   var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(myData, d => d.healthcare)])
+    .domain([4, d3.max(myData, d => d.healthcare)])
     .range([height, 0]);
 
   // Create initial axis functions
@@ -89,24 +89,13 @@ d3.csv("assets/data/data.csv").then(function(myData, err) {
     .append("text")
     .text(d => d.abbr)
     .attr("x", d => xLinearScale(d.poverty))
-    .attr("y", d => yLinearScale(d.healthcare))
+    .attr("y", d => yLinearScale(d.healthcare) + 7)
     .classed("stateText", true);
 
 
-
-    // var selection = chartGroup.selectAll(".stateText")
-    //     .data(myData);
-
-    // selection.enter()
-    //     .append("text")
-    //     .classed("stateText", true)
-    //     .text(d => d.abbr)
-    //     .attr("x", d => xLinearScale(d.poverty))
-    //     .attr("y", d => yLinearScale(d.healthcare))
-    //     .merge(selection);
  
 
-  // Create group for two x-axis labels
+  // Create group for x-axis labels
   var labelsGroup = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
