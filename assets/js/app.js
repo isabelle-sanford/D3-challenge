@@ -1,6 +1,6 @@
 // @TODO: YOUR CODE HERE!
 var svgWidth = 960;
-var svgHeight = 500;
+var svgHeight = 700;
 
 var margin = {
   top: 20,
@@ -46,7 +46,7 @@ d3.csv("assets/data/data.csv").then(function(myData, err) {
   // parse data
   myData.forEach(function(data) {
     data.poverty = +data.poverty;
-    data.obesity = +data.obesity;
+    data.healthcare = +data.healthcare;
     // data.num_albums = +data.num_albums;
   });
 
@@ -55,7 +55,7 @@ d3.csv("assets/data/data.csv").then(function(myData, err) {
 
   // Create y scale function
   var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(myData, d => d.obesity)])
+    .domain([0, d3.max(myData, d => d.healthcare)])
     .range([height, 0]);
 
   // Create initial axis functions
@@ -63,7 +63,7 @@ d3.csv("assets/data/data.csv").then(function(myData, err) {
   var leftAxis = d3.axisLeft(yLinearScale);
 
   // append x axis
-  var xAxis = chartGroup.append("g")
+  chartGroup.append("g")
     .classed("x-axis", true)
     .attr("transform", `translate(0, ${height})`)
     .call(bottomAxis);
@@ -72,25 +72,48 @@ d3.csv("assets/data/data.csv").then(function(myData, err) {
   chartGroup.append("g")
     .call(leftAxis);
 
-  // append initial circles
-  var circlesGroup = chartGroup.selectAll("circle")
+  // append circles
+  chartGroup.selectAll("circle")
     .data(myData)
     .enter()
     .append("circle")
+    .classed("stateCircle", true)
     .attr("cx", d => xLinearScale(d.poverty))
-    .attr("cy", d => yLinearScale(d.obesity))
-    .attr("r", 15)
-    .attr("fill", "blue")
-    .attr("opacity", ".5");
+    .attr("cy", d => yLinearScale(d.healthcare))
+    .attr("r", 15);
+
+
+  chartGroup.selectAll(".stateText")
+    .data(myData)
+    .enter()
+    .append("text")
+    .text(d => d.abbr)
+    .attr("x", d => xLinearScale(d.poverty))
+    .attr("y", d => yLinearScale(d.healthcare))
+    .classed("stateText", true);
+
+
+
+    // var selection = chartGroup.selectAll(".stateText")
+    //     .data(myData);
+
+    // selection.enter()
+    //     .append("text")
+    //     .classed("stateText", true)
+    //     .text(d => d.abbr)
+    //     .attr("x", d => xLinearScale(d.poverty))
+    //     .attr("y", d => yLinearScale(d.healthcare))
+    //     .merge(selection);
+ 
 
   // Create group for two x-axis labels
   var labelsGroup = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
-  var xLabel = labelsGroup.append("text")
+  labelsGroup.append("text")
     .attr("x", 0)
     .attr("y", 20)
-    .classed("active", true)
+    //.classed("active", true)
     .text("Poverty (%)");
 
 
@@ -102,7 +125,7 @@ d3.csv("assets/data/data.csv").then(function(myData, err) {
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .classed("axis-text", true)
-    .text("Obesity (%)");
+    .text("healthcare (%)");
 
   
 }).catch(function(error) {
